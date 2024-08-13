@@ -1,40 +1,38 @@
-import { useEffect } from "react";
-import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
-import { auth, provider } from "../../config/firebaseConfig"; // Adjust the path if needed
+import firebase from "../firebase";
+import { useContext } from 'react';
+import AuthContext from './AuthContext';
 
-const Home = () => {
-  const signInWithGoogle = () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const user = result.user;
-        console.log("User Info:", user);
-        // Handle user session or store user info as needed
-      })
-      .catch((error) => {
-        console.error("Error during sign-in:", error);
-      });
-  };
+const signUp = (email, password) => {
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("User Info:", user);
-        // Handle authenticated user
-      } else {
-        console.log("User is signed out");
-        // Handle unauthenticated state
-      }
+  const { currentUser, loading } = useContext(AuthContext);
+
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // Handle successful sign-up
+    })
+    .catch((error) => {
+      // Handle errors
     });
-
-    return () => unsubscribe(); // Cleanup on unmount
-  }, []);
-
-  return (
-    <div>
-      <h1>Home</h1>
-      <button onClick={signInWithGoogle}>Sign in with Google</button>
-    </div>
-  );
 };
 
-export default Home;
+const signIn = (email, password) => {
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // Handle successful sign-in
+    })
+    .catch((error) => {
+      // Handle errors
+    });
+};
+
+const signOut = () => {
+  firebase.auth().signOut()
+    .then(() => {
+      // Handle successful sign-out
+    })
+    .catch((error) => {
+      // Handle errors
+    });
+};
+
+export { signUp, signIn, signOut };
