@@ -1,11 +1,12 @@
+import { AuthProvider } from './AuthContext'
 import Home from './components/Home'
 
 function App() {
 
   return (
-    <>
-    <Home />
-    </>
+    <AuthProvider>
+      <Home/>
+    </AuthProvider>
   )
 }
 
